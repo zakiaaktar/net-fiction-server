@@ -33,6 +33,7 @@ async function run() {
 
 
     const serviceCollection = client.db('netFiction').collection('services');
+    const bookingCollection = client.db('netFiction').collection('bookings');
 
 
     app.get('/services', async(req, res) =>{
@@ -45,9 +46,56 @@ async function run() {
     app.get('/services/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
-        const service = await serviceCollection.findOne(query);
-        res.send(service);
+        const result = await serviceCollection.findOne(query);
+        res.send(result);
     });
+
+
+    //bookings
+    app.get('/bookings', async (req, res) => {
+        console.log(req.query.email);
+        let query = {};
+        if(req.query?.email){
+            query = {email: req.query.email}
+        }
+
+        const result = await bookingCollection.find(query).toArray();
+        res.send(result);
+    });
+
+
+
+
+    app.post('/bookings', async (req, res) => {
+        const booking = req.body;
+        console.log(booking);
+        const result = await bookingCollection.insertOne(booking);
+        res.send(result);
+    });
+
+
+
+
+    // app.get('/services/:id', async (req, res) => {
+    //     const id = req.params.id;
+    //     const query = { _id: new ObjectId(id) };
+
+
+    //     const options = {
+           
+    //         // Include only the `title` and `imdb` fields in the returned document
+    //         projection: { title: 1, price: 1, id: 1 },
+    //       };
+
+
+
+
+    //     const result = await serviceCollection.findOne(query, options);
+    //     res.send(result);
+    // });
+
+
+   
 
 
 
